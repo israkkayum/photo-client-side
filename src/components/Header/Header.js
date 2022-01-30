@@ -38,6 +38,7 @@ const Header = () => {
           if (data.insertedId) {
             setSuccess('yes');
             setLoad(false);
+            window.location.reload();
           }
         })
         .catch(error => {
