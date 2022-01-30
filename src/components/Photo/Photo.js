@@ -32,7 +32,7 @@ const Photo = (props) => {
 
     return (
         <div>
-
+            
             <Col>
                 <Card>
                     <Card.Img variant="top" src={`data:image/png;base64,${image}`} style={{ height: '300px' }} />
