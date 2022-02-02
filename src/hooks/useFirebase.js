@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail, signOut, updateProfile } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, sendEmailVerification, sendPasswordResetEmail, signOut, updateProfile } from "firebase/auth";
 import initializeAuthentication from "../components/Login/Firebase/firebase.init";
 
 
@@ -64,6 +64,14 @@ const useFirebase = () => {
             });
     }
 
+    const emailVerification = () => {
+        sendEmailVerification(auth.currentUser)
+            .then(() => {
+                // Email verification sent!
+                // ...
+            });
+    }
+
 
     useEffect(() => {
         const unsubscribed = onAuthStateChanged(auth, (user) => {
@@ -113,7 +121,8 @@ const useFirebase = () => {
         registerUser,
         loginUser,
         logout,
-        resetPassword
+        resetPassword,
+        emailVerification
     }
 }
 

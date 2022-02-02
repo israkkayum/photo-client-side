@@ -15,6 +15,7 @@ import PrivateRoute from './components/Login/PrivateRoute/PrivateRoute';
 import Profile from './components/Profile/Profile';
 
 function App() {
+
   render(
 
     <BrowserRouter>
@@ -30,12 +31,13 @@ function App() {
           </PrivateRoute>}>
           </Route>
           <Route path="/profile" element={<PrivateRoute>
-            <Profile />
+            <Profile/>
           </PrivateRoute>}>
           </Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/register" element={<Register />}></Route>
         </Routes>
+        <Footer></Footer>
       </AuthProvider>
     </BrowserRouter>,
 

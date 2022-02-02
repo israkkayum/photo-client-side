@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { Card, Col, Container, Image, Nav, NavItem, Row, Spinner, Tab } from 'react-bootstrap';
+import { Badge, Card, Col, Container, Image, Nav, NavItem, Row, Spinner, Tab } from 'react-bootstrap';
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
 import useAuth from '../../hooks/useAuth';
-import { Button, Stack } from '@mui/material';
+import { Alert, Button, Stack } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
+import VerifiedIcon from '@mui/icons-material/Verified';
+import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
+import MyPhoto from '../MyPhoto/MyPhoto';
 
 const Input = styled('input')({
     display: 'none',
@@ -14,14 +17,17 @@ const Input = styled('input')({
 
 const Profile = () => {
 
-    const { logout, user } = useAuth();
+    const { logout, user, emailVerification } = useAuth();
 
     const [avatar, setAvatar] = useState(null);
     const [success, setSuccess] = React.useState('no');
     const [load, setLoad] = React.useState(false);
     const [profile, setProfile] = useState({});
+    const [message, setMessage] = useState(false);
 
     const email = user.email;
+
+    console.log(user);
 
     const handleUpload = e => {
 
@@ -45,7 +51,7 @@ const Profile = () => {
                     console.error('Error:', error);
                 });
         }
-        else {
+        else { 
             setSuccess("no");
             setLoad(false);
           }
@@ -58,13 +64,20 @@ const Profile = () => {
             .then(data => {
                 setProfile(data);
             })
-    }, [])
+    }, []);
+
+    const handleEmailVerification = e => {
+        emailVerification();
+        setMessage(true);
+        e.preventDefault();
+    }
 
     return (
         <Container className='my-5 py-5'>
+             {message && <Alert severity="info">Please check your email..</Alert>}
             <Tab.Container id="left-tabs-example" defaultActiveKey="first">
                 <Row>
-                    <Col sm={3}>
+                    <Col lg={3} className='mb-3'>
                         <Card className='p-3 shadow' style={{ border: 'none' }}>
 
                         <div style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
@@ -72,6 +85,7 @@ const Profile = () => {
                         </div>
 
                             <Nav variant="pills" className="flex-column my-2">
+
                                 <Nav.Item className='my-3'>
                                     <Nav.Link eventKey="first">
                                         <div style={{ display: 'flex', alignItems: 'center', fontWeight: 'bold', cursor: 'pointer' }}>
@@ -84,6 +98,20 @@ const Profile = () => {
                                         </div>
                                     </Nav.Link>
                                 </Nav.Item>
+
+                                <Nav.Item className='mb-3'>
+                                    <Nav.Link eventKey="second">
+                                        <div style={{ display: 'flex', alignItems: 'center', fontWeight: 'bold', cursor: 'pointer' }}>
+                                            <div>
+                                                <PhotoLibraryIcon />
+                                            </div>
+                                            <div style={{ marginLeft: '50px' }}>
+                                                My Photo
+                                            </div>
+                                        </div>
+                                    </Nav.Link>
+                                </Nav.Item>
+
                                 <Nav.Item>
                                     <Nav.Link onClick={logout}>
                                         <div style={{ display: 'flex', alignItems: 'center', fontWeight: 'bold', cursor: 'pointer' }}>
@@ -96,19 +124,22 @@ const Profile = () => {
                                         </div>
                                     </Nav.Link>
                                 </Nav.Item>
+                                
                             </Nav>
                         </Card>
                     </Col>
-                    <Col sm={9}>
+                    <Col lg={9}>
                         <Card className='p-3 shadow' style={{ border: 'none' }}>
                             <Tab.Content>
                                 <Tab.Pane eventKey="first">
                                     <Row>
-                                        <Col xs={6} md={4}>
-                                            <div className="me-5">
+                                        <Col xs={12} md={4}>
+                                            <div className="mb-5">
                                                 
                                             <div className='mb-3' style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
+                                                <div>
                                                 <Card.Img variant="top" src={`data:image/png;base64,${profile.avatar}`} />
+                                                </div>
                                             </div>
                                                 <Stack direction="row" justifyContent='center' alignItems="center" spacing={2}>
                                                     {avatar && success == 'no' ?
@@ -135,18 +166,29 @@ const Profile = () => {
                                             </div>
                                         </Col>
                                         <Col xs={12} md={8}>
-                                            <div>
+                                            <div className='ms-3'>
                                                 <p className="text-muted">Full Name</p>
                                                 <p className="fw-bold">{user.displayName}</p>
 
                                                 <p className="text-muted">Email Address</p>
-                                                <p className="fw-bold">{user.email}</p>
+                                                <p className="fw-bold">{user.email}  
+
+                                                { user.emailVerified ?
+                                                    <VerifiedIcon className='ms-3' fontSize="small" color="primary"/>:
+
+                                                    <Badge style={{cursor:'pointer'}} onClick={handleEmailVerification} bg="primary" className='ms-3'>Verify</Badge>
+                                                }
+                                                
+                                                </p>
 
                                                 <p className="text-muted">Secrete Code</p>
                                                 <p className="fw-bold">+880 0000000000</p>
                                             </div>
                                         </Col>
                                     </Row>
+                                </Tab.Pane>
+                                <Tab.Pane eventKey="second">
+                                    <MyPhoto></MyPhoto>
                                 </Tab.Pane>
 
                             </Tab.Content>

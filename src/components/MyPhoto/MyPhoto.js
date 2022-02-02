@@ -4,7 +4,7 @@ import Photo from '../Photo/Photo';
 import Container from 'react-bootstrap/Container'
 import useAuth from '../../hooks/useAuth';
 
-const Body = () => {
+const MyPhoto = () => {
 
     const [itemData, setItemData] = React.useState([]);
     const [load, setLoad] = React.useState(true);
@@ -49,7 +49,7 @@ const Body = () => {
                     load ? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <Spinner animation="border" />
                     </div> :
-                        <Row xs={1} sm={2} md={3} lg={4} className="g-4">
+                        <Row xs={1} sm={1} md={2} lg={3} className="g-3">
                             {
                                 itemData.map(item => <Photo
 
@@ -68,4 +68,4 @@ const Body = () => {
     )
 }
 
-export default Body;
+export default MyPhoto;

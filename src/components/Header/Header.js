@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -22,21 +22,24 @@ const Input = styled('input')({
 
 const Header = () => {
 
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
   const [image, setImage] = React.useState(null);
   const [success, setSuccess] = React.useState('no');
   const [load, setLoad] = React.useState(false);
-  const [profile, setProfile] = React.useState({});
+  const [profile, setProfile] = useState({});
 
-  const email = JSON.stringify(user.email);
+  const email = user.email;
 
   const handleUpload = e => {
 
     if (image) {
       setLoad(true);
+
       const formData = new FormData();
-      formData.append('image', image, email);
+
+      formData.append('image', image);
+      formData.append('email', email); 
 
       fetch('https://photo-album-server.herokuapp.com/image', {
         method: 'POST',
@@ -97,7 +100,7 @@ const Header = () => {
         .then(data => {
             setProfile(data);
         })
-}, [])
+}, [user.email]);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -151,9 +154,9 @@ const Header = () => {
               variant="dot"
             >
               <NavLink end to='/profile'>
-              
-                <Avatar src={`data:image/png;base64,${profile?.avatar}`} alt=''/>
-                
+                 
+              <Avatar src={`data:image/png;base64,${profile?.avatar}`} alt='' />
+   
               </NavLink>
               
             </StyledBadge>
