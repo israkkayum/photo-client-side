@@ -16,9 +16,8 @@ const theme = createTheme();
 
 const Login = () => {
     const [loginData, setLoginData] = useState({});
-    const { user, loginUser, isLoading, authError, resetPassword } = useAuth();
+    const { user, loginUser, isLoading, authError, authInfo, resetPassword } = useAuth();
 
-    const [message, setMessage] = useState(false);
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -32,25 +31,23 @@ const Login = () => {
     }
     const handleLoginSubmit = e => {
         loginUser(loginData.email, loginData.password, location, navigate);
-        setMessage(false);
         e.preventDefault();
     }
 
     const handleResetPassword = e =>{
         resetPassword(loginData.email);
-        setMessage(true);
         e.preventDefault();
     }
 
 
     return (
             <ThemeProvider theme={theme}>
-                <Container component="main" maxWidth="xs">
+                <Container component="main" maxWidth="xs" className='mb-5 pb-5'>
                     <CssBaseline />
                     <Box sx={{display: 'flex', justifyContent:'center', alignItems:'center', marginTop:'10px'}}>
                     {isLoading && <CircularProgress />} <br />
-                    {authError && <Alert severity="error">{authError}</Alert>}
-                    {message && <Alert severity="info">Please check your email..</Alert>}
+                    {authError && <Alert variant="filled" severity="error">{authError}</Alert>}
+                    {authInfo && <Alert variant="filled" severity="info">{authInfo}</Alert>}
                     </Box>
                     <Box
                         sx={{
@@ -100,7 +97,7 @@ const Login = () => {
                             </Button>
                             <Grid container>
                                 <Grid item xs>
-                                    <Link onClick={handleResetPassword} sx={{textDecoration:'none'}} href="#" variant="body2">
+                                    <Link onClick={handleResetPassword} sx={{textDecoration:'none', cursor:"pointer"}} variant="body2">
                                         Forgot password?
                                     </Link>
                                 </Grid>

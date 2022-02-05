@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, sendEmailVerification, sendPasswordResetEmail, signOut, updateProfile } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, sendEmailVerification, sendPasswordResetEmail, signOut, updateProfile, deleteUser } from "firebase/auth";
 import initializeAuthentication from "../components/Login/Firebase/firebase.init";
 
 
@@ -9,18 +9,23 @@ const useFirebase = () => {
     const [user, setUser] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const [authError, setAuthError] = useState('');
+    const [authInfo, setAuthInfo] = useState('');
     const [admin, setAdmin] = useState(false)
 
     const auth = getAuth();
 
     const registerUser = (email, password, name, navigate) => {
+
         setIsLoading(true);
+
         createUserWithEmailAndPassword(auth, email, password)
+
             .then((userCredential) => {
                 setAuthError('');
+                setAuthInfo('');
+
                 const newUser = { email, displayName: name };
                 setUser(newUser);
-
                 saveUser(email, name);
 
                 updateProfile(auth.currentUser, {
@@ -29,33 +34,43 @@ const useFirebase = () => {
                 }).catch((error) => {
                 });
                 navigate('/');
+
             })
             .catch((error) => {
-                setAuthError(error.message);
+                setAuthInfo('');
+                setAuthError('This email already registered.');
+
             })
             .finally(() => setIsLoading(false));
     }
 
     const loginUser = (email, password, location, navigate) => {
         setIsLoading(true);
+
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
+
+                setAuthError('');
+                setAuthInfo('');
+
                 const destination = location?.state?.from || '/';
                 navigate(destination);
-                setAuthError('');
+
             })
             .catch((error) => {
-                setAuthError(error.message);
+                setAuthInfo('');
+                setAuthError('Email address or password are incorrect.');
             })
             .finally(() => setIsLoading(false));
+
     };
 
 
     const resetPassword = (email) => {
         sendPasswordResetEmail(auth, email)
             .then(() => {
-                // Password reset email sent!
-                // ..
+                setAuthError('');
+                setAuthInfo('Your request successfully submitted! Please check your email ...')
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -70,6 +85,19 @@ const useFirebase = () => {
                 // Email verification sent!
                 // ...
             });
+    }
+
+    const deleteUserAccount = () => {
+
+        const user = auth.currentUser;
+
+        deleteUser(user).then(() => {
+            // User deleted.
+        }).catch((error) => {
+            // An error ocurred
+            // ...
+        });
+
     }
 
 
@@ -117,12 +145,14 @@ const useFirebase = () => {
         user,
         isLoading,
         authError,
+        authInfo,
         admin,
         registerUser,
         loginUser,
         logout,
         resetPassword,
-        emailVerification
+        emailVerification,
+        deleteUserAccount
     }
 }
 

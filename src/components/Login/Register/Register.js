@@ -12,14 +12,17 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 
+
 const theme = createTheme();
 
 const Register = () => {
     const [loginData, setLoginData] = useState({});
+    const [message, setMessage] = useState('');
 
     const navigate = useNavigate();
 
-    const { user, registerUser, isLoading, authError } = useAuth();
+    const { registerUser, isLoading, authError, authInfo } = useAuth();
+
 
     const handleOnBlur = e => {
         const field = e.target.name;
@@ -30,21 +33,26 @@ const Register = () => {
     }
     const handleLoginSubmit = e => {
         if (loginData.password !== loginData.password2) {
-            alert('Your password did not match');
-            return
+            setMessage('Your password did not match');
         }
-        registerUser(loginData.email, loginData.password, loginData.name, navigate);
+        else{
+            registerUser(loginData.email, loginData.password, loginData.name, navigate);
+            setMessage('');
+        }
+        
         e.preventDefault();
     }
 
     return (
 
         <ThemeProvider theme={theme}>
-            <Container component="main" maxWidth="xs">
+            <Container component="main" maxWidth="xs" className='mb-5 pb-5'>
                 <CssBaseline />
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
                     {isLoading && <CircularProgress />} <br />
-                    {authError && <Alert severity="error">{authError}</Alert>}
+                    {authInfo && <Alert variant="filled" severity="success">{authInfo}</Alert>}
+                    {authError && <Alert variant="filled" severity="error">{authError}</Alert>}
+                    {message && <Alert variant="filled" severity="error">{message}</Alert>}
                 </Box>
                 <Box
                     sx={{

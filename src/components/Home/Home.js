@@ -1,12 +1,13 @@
 import React from 'react';
-import MyPhoto from '../MyPhoto/MyPhoto';
+import MyPhotos from '../MyPhotos/MyPhotos';
 import Footer from '../Footer/Footer';
 import Header from '../Header/Header';
+import PublicPhotos from '../PublicPhotos/PublicPhotos';
 
 const Home = () => {
     return (
         <div>
-            <MyPhoto></MyPhoto>
+            <PublicPhotos></PublicPhotos>
         </div>
     );
 };
